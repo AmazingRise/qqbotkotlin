@@ -12,7 +12,8 @@ data class Message(
     val sender: Sender,
     val sub_type: String,
     val time: Int,
-    val user_id: Long
+    val user_id: Long,
+    val notice_type: String
 ){/*
     fun isFromOp(): Boolean {
         return this.user_id in ops;

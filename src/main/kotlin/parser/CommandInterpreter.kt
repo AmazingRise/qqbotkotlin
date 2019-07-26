@@ -78,10 +78,7 @@ class CommandInterpreter {
      * parseSuperCommand
      * (Command from conversations and command)
      */
-    fun parseSuperCommand(superCommand: String?):String {
-        if (superCommand.isNullOrEmpty()){
-            return ""
-        }
+    fun parseSuperCommand(superCommand: String):String {
         val args = superCommand.split(" ")
         when (args[0]) {
             "reset" -> {
@@ -97,10 +94,18 @@ class CommandInterpreter {
                 return toggle(args[1])
             }
             "addop"->{
-
+                try {
+                    Global.operators.add(args[1].toLong())
+                } catch (e: NumberFormatException) {
+                    return "Id invalid."
+                }
             }
             "delop"->{
-
+                try {
+                    Global.operators.remove(args[1].toLong())
+                } catch (e: NumberFormatException) {
+                    return "Id invalid."
+                }
             }
         }
         return ""
