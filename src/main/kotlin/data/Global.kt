@@ -1,7 +1,5 @@
 package data
 
-import java.io.File
-
 object Global {
     var coolDownSeconds: Int = 5
     //Local port of the running server
@@ -18,5 +16,7 @@ object Global {
     var operators: MutableList<Long> = mutableListOf(0L)
 
     //If printInfo is true, debug information will be printed out.
-    var printInfo: Boolean = false
+    var printInfo: Boolean = true
+    //If enabled, all requests will be accepted.
+    var acceptRequests: Boolean = false
 }

@@ -5,12 +5,12 @@ import data.LogType
 import parser.CommandInterpreter
 
 object Prompt {
-    public fun echo(text: String) {
+    fun echo(text: String) {
         if (Global.printInfo) {
             echo(text, LogType.INFO)
         }
     }
-    public fun echo(text: String, logType: LogType) {
+    fun echo(text: String, logType: LogType) {
         when (logType) {
             LogType.OK      -> print("[  OK  ] ")
             LogType.FAILED  -> print("[FAILED] ")
@@ -18,9 +18,9 @@ object Prompt {
         }
         println(text)
     }
-    public fun run(){
+    fun run(){
         while (true){
-            var input = readLine()
+            val input: String = readLine() ?: continue
             CommandInterpreter().parseSuperCommand(input)
         }
     }

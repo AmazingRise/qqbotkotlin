@@ -22,8 +22,8 @@ class CommandInterpreter {
                         Global.replyDictionary[groupId]!![keyword] = reply
                     }else{
                         val initHashMap = HashMap<String, String>()
-                        initHashMap.put(keyword,reply)
-                        Global.replyDictionary.put(groupId,initHashMap)
+                        initHashMap[keyword] = reply
+                        Global.replyDictionary[groupId] = initHashMap
                     }
                     return "Done. ($keyword,$reply)"
                 }  catch (e: Exception) {
@@ -47,12 +47,7 @@ class CommandInterpreter {
                 }
             }
             "lstkw" -> {
-                try {
-                    return Global.replyDictionary[groupId]!!.toString()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    return "No keywords found."
-                }
+                    return Global.replyDictionary[groupId].toString()
             }
             "remindme" -> {
                 try {
@@ -70,6 +65,7 @@ class CommandInterpreter {
                     return "Add reminder failed."
                 }
             }
+            "syn" -> return "ack"
         }
         return ""
     }
@@ -88,7 +84,9 @@ class CommandInterpreter {
                 if (!Archive.loadKeywordsFromFile(File(args[1]))) return "Error loading configuration file."
             }
             "savekw" -> {
-
+                //The function is too dangerous.
+                //Temporarily disabled.
+                //if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error loading configuration file."
             }
             "toggle" -> {
                 return toggle(args[1])
@@ -113,11 +111,15 @@ class CommandInterpreter {
 
     private fun toggle(arg: String):String {
         when (arg) {
+            //TODO: Replace this with reflection.
             "print_info" -> {
                 Global.printInfo = !Global.printInfo
                 return "You have toggled debug information printing."
             }
-
+            "accept_requests" -> {
+                Global.acceptRequests =!Global.acceptRequests
+                return "You have toggled request acception."
+            }
         }
         return ""
     }

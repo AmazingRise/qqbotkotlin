@@ -1,6 +1,6 @@
 package data
 
-data class Message(
+data class Request(
     val font: Int,
     var message: String,
     val message_id: Int,
