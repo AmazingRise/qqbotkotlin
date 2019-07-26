@@ -1,8 +1,11 @@
 package parser
 
 import data.Global
+import data.LogType
 import util.Archive
+import util.Prompt
 import java.io.File
+import kotlin.system.exitProcess
 
 class CommandInterpreter {
     /**
@@ -81,13 +84,18 @@ class CommandInterpreter {
                 "reset" -> {
                     return "Reset done."
                 }
-                "loadkw" -> {
+                "load" -> {
                     if (!Archive.loadKeywordsFromFile(File(args[1]))) return "Error loading configuration file."
                 }
-                "savekw" -> {
-                    //The function is too dangerous.
-                    //Temporarily disabled.
-                    //if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error loading configuration file."
+                "save" -> {
+                    if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error saving configuration file."
+                }
+                "stopserver" -> {
+                    if (!Archive.saveKeywordsToFile(File(Global.defaultArchiveLocation))) {
+                        Prompt.echo("Error saving configuration file.", LogType.FAILED)
+                    }
+                    network.Server.stop()
+                    exitProcess(0)
                 }
                 "toggle" -> {
                     return toggle(args[1])
@@ -97,6 +105,7 @@ class CommandInterpreter {
                         Global.operators.add(args[1].toLong())
                         return "Operator ${args[1]} has been added."
                     } catch (e: NumberFormatException) {
+                        //TODO: Add IndexOutOfBoundException.
                         return "Id invalid."
                     }
                 }
@@ -105,12 +114,27 @@ class CommandInterpreter {
                         Global.operators.remove(args[1].toLong())
                         return "Operator ${args[1]} has been removed."
                     } catch (e: NumberFormatException) {
+                        //TODO: Add IndexOutOfBoundException.
                         return "Id invalid."
                     }
                 }
                 "lstop" -> {
                     return Global.operators.toString()
                 }
+                "lstallkw" -> {
+                    return Global.replyDictionary.toString()
+                }
+                "ban" -> {
+                    try {
+                        Global.operators.add(args[1].toLong())
+                        return "Operator ${args[1]} has been added."
+                    } catch (e: NumberFormatException) {
+                        //TODO: Add IndexOutOfBoundException.
+                        return "Id invalid."
+                    }
+                }
+                //TODO: Add unban function
+                //TODO: Add server running status
             }
             return ""
         } catch (e: IndexOutOfBoundsException) {
@@ -127,7 +151,11 @@ class CommandInterpreter {
             }
             "accept_requests" -> {
                 Global.acceptRequests =!Global.acceptRequests
-                return "You have toggled request acception."
+                return "You have toggled request acceptation."
+            }
+            "service_state" -> {
+                Global.suspendService = !Global.suspendService
+                return "You have toggled service state."
             }
         }
         return ""

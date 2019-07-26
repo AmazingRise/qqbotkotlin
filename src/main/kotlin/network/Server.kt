@@ -1,14 +1,14 @@
 package network
 
-import com.sun.net.httpserver.*
+import com.sun.net.httpserver.HttpHandler
+import com.sun.net.httpserver.HttpServer
 import data.LogType
 import parser.RawRequestParser
 import util.Prompt
 import java.io.BufferedReader
-import java.lang.Exception
 import java.net.InetSocketAddress
 
-class Server {
+object Server {
     private var server : HttpServer? = null
     private val httpHandler = HttpHandler { httpExchange ->
         //Get request body

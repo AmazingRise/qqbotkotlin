@@ -3,9 +3,8 @@ import data.Global
 import data.LogType
 import khttp.get
 import util.Prompt
-import java.lang.NullPointerException
 
-class Client {
+object Client {
     fun sendMessageToGroup(groupId: Long, content: String): Boolean {
         return try {
             get("http://${Global.remoteAddress}/send_msg?group_id=$groupId&message=$content")

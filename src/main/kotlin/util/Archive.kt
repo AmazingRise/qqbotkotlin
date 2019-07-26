@@ -2,13 +2,12 @@ package util
 
 import com.squareup.moshi.Moshi
 import data.Global
-import parser.JsonParser
 import java.io.File
 
 object Archive {
     fun loadKeywordsFromFile(file: File):Boolean {
         //TODO: add exception process
-        val adapter = Moshi.Builder().build().adapter<MutableMap<String,Object>>(MutableMap::class.java)
+        val adapter = Moshi.Builder().build().adapter<MutableMap<String,Any>>(MutableMap::class.java)
         val jsonData = file.bufferedReader().use { it.readText() }
         val jsonStructure= adapter.fromJson(jsonData)
         for ((key, value) in jsonStructure!!) {
@@ -18,12 +17,15 @@ object Archive {
     }
 
     fun saveKeywordsToFile(file: File):Boolean {
-        val adapter = Moshi.Builder().build().adapter(Any::class.java)
+        val adapter = Moshi.Builder().build().adapter<MutableMap<Long,MutableMap<String,String>>>(MutableMap::class.java)
         return try {
             val jsonContent = adapter.toJson(Global.replyDictionary)
-            file.bufferedWriter().use{it.write(jsonContent)}
+            if (!file.exists()) {
+
+            }
+            file.writeText(jsonContent)
             true
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             false
         }

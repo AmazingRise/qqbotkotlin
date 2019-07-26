@@ -13,4 +13,4 @@ Once the keyword is hit, the robot will reply the preset
 1. A simple command prompt.
 1. Keywords loading and saving.
 1. Keywords isolation among conversations.
-1. Cool down time limitation. (Unfinished)
+1. Cool down time limitation.

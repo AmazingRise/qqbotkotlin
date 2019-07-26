@@ -7,7 +7,7 @@ import data.Request
 class RawRequestParser {
     fun parse(rawRequest: String):String {
         //Parse raw request
-        val request = Moshi.Builder().build().adapter(Request::class.java).fromJson(rawRequest)?:return ""
+        val request = Moshi.Builder().build().adapter<Request>(Request::class.java).fromJson(rawRequest)?:return ""
 
         //Sort message type
         when (request.post_type){
@@ -28,6 +28,7 @@ class RawRequestParser {
     }
 
     private fun messageProcessor(request: Request): String {
+
         //Process operator commands
         if (request.user_id in Global.operators) {
             val superCommandResult = CommandInterpreter().parseSuperCommand(request.message)
@@ -36,8 +37,27 @@ class RawRequestParser {
             }
         }
 
+        //Blacklist function
+        if (request.user_id in Global.blacklist) {
+            return ""
+        }
+
+        //Suspend function
+        if (Global.suspendService) {
+            return ""
+        }
+
+        //Cool down limitation
+        val now = System.currentTimeMillis()
+        if ((now - Global.lastActivateTime) < Global.coolDownSeconds.toLong() * 1000) {
+            return ""
+        } else {
+            Global.lastActivateTime = System.currentTimeMillis()
+        }
+
         //Parse group command
         //TODO: Add filter to ensure safety.
+        //TODO: Solve the problem of specific symbols.
         val groupCommandResult = CommandInterpreter().parseGroupCommand(request.message, request.group_id)
         if (groupCommandResult != "") {
             return groupCommandResult
