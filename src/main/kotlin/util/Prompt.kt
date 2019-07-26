@@ -5,6 +5,8 @@ import data.LogType
 import parser.CommandInterpreter
 
 object Prompt {
+    val promptSymbol = "Robot>"
+
     fun echo(text: String) {
         if (Global.printInfo) {
             echo(text, LogType.INFO)
@@ -20,8 +22,13 @@ object Prompt {
     }
     fun run(){
         while (true){
+            echo("Robot prompt is ready to accept commands.", LogType.OK)
+            print(promptSymbol)
             val input: String = readLine() ?: continue
-            CommandInterpreter().parseSuperCommand(input)
+            val result = CommandInterpreter().parseSuperCommand(input)
+            if (result != "") {
+                echo(result, LogType.OK)
+            }
         }
     }
 }

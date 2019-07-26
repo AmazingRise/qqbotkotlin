@@ -76,37 +76,46 @@ class CommandInterpreter {
      */
     fun parseSuperCommand(superCommand: String):String {
         val args = superCommand.split(" ")
-        when (args[0]) {
-            "reset" -> {
-                return "Reset done."
-            }
-            "loadkw" -> {
-                if (!Archive.loadKeywordsFromFile(File(args[1]))) return "Error loading configuration file."
-            }
-            "savekw" -> {
-                //The function is too dangerous.
-                //Temporarily disabled.
-                //if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error loading configuration file."
-            }
-            "toggle" -> {
-                return toggle(args[1])
-            }
-            "addop"->{
-                try {
-                    Global.operators.add(args[1].toLong())
-                } catch (e: NumberFormatException) {
-                    return "Id invalid."
+        try {
+            when (args[0]) {
+                "reset" -> {
+                    return "Reset done."
+                }
+                "loadkw" -> {
+                    if (!Archive.loadKeywordsFromFile(File(args[1]))) return "Error loading configuration file."
+                }
+                "savekw" -> {
+                    //The function is too dangerous.
+                    //Temporarily disabled.
+                    //if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error loading configuration file."
+                }
+                "toggle" -> {
+                    return toggle(args[1])
+                }
+                "addop" -> {
+                    try {
+                        Global.operators.add(args[1].toLong())
+                        return "Operator ${args[1]} has been added."
+                    } catch (e: NumberFormatException) {
+                        return "Id invalid."
+                    }
+                }
+                "delop" -> {
+                    try {
+                        Global.operators.remove(args[1].toLong())
+                        return "Operator ${args[1]} has been removed."
+                    } catch (e: NumberFormatException) {
+                        return "Id invalid."
+                    }
+                }
+                "lstop" -> {
+                    return Global.operators.toString()
                 }
             }
-            "delop"->{
-                try {
-                    Global.operators.remove(args[1].toLong())
-                } catch (e: NumberFormatException) {
-                    return "Id invalid."
-                }
-            }
+            return ""
+        } catch (e: IndexOutOfBoundsException) {
+            return "Parameters missing."
         }
-        return ""
     }
 
     private fun toggle(arg: String):String {

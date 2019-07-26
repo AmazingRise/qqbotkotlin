@@ -16,7 +16,7 @@ object Global {
     var operators: MutableList<Long> = mutableListOf(0L)
 
     //If printInfo is true, debug information will be printed out.
-    var printInfo: Boolean = true
+    var printInfo: Boolean = false
     //If enabled, all requests will be accepted.
     var acceptRequests: Boolean = false
 }
