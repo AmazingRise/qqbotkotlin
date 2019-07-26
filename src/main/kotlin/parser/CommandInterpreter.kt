@@ -21,7 +21,7 @@ class CommandInterpreter {
                     if (Global.replyDictionary[groupId]!=null) {
                         Global.replyDictionary[groupId]!![keyword] = reply
                     }else{
-                        var initHashMap = HashMap<String, String>()
+                        val initHashMap = HashMap<String, String>()
                         initHashMap.put(keyword,reply)
                         Global.replyDictionary.put(groupId,initHashMap)
                     }
@@ -95,6 +95,12 @@ class CommandInterpreter {
             }
             "toggle" -> {
                 return toggle(args[1])
+            }
+            "addop"->{
+
+            }
+            "delop"->{
+
             }
         }
         return ""
