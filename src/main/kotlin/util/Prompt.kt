@@ -22,7 +22,7 @@ object Prompt {
     }
     fun run(){
         while (true){
-            echo("Robot prompt is ready to accept commands.", LogType.OK)
+            echo("Robot prompt is ready.", LogType.OK)
             print(promptSymbol)
             val input: String = readLine() ?: continue
             val result = CommandInterpreter().parseSuperCommand(input)

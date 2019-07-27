@@ -28,7 +28,9 @@ object Server {
 
         val out = httpExchange.responseBody!!.writer()
 
-        out.write("""{"reply":"${RawRequestParser().parse(requestBody)}", "at_sender" : false}""")
+        val reply = RawRequestParser().parse(requestBody)
+        //TODO: Return flexibly
+        out.write("""{"reply":"$reply", "at_sender" : true}""")
         out.close()
     }
 

@@ -3,6 +3,7 @@ package parser
 import com.squareup.moshi.Moshi
 import data.Global
 import data.Request
+import network.Client
 
 class RawRequestParser {
     fun parse(rawRequest: String):String {
@@ -12,7 +13,8 @@ class RawRequestParser {
         //Sort message type
         when (request.post_type){
             "notice" -> {
-                if (request.notice_type=="group_increase"){
+                if (request.notice_type=="group_increase" && isCoolDownEnded()){
+                    Client.sendMessageToGroup(request.group_id,"Welcome, freshman!")
                     return "Welcome freshman!"
                 }
             }
@@ -42,18 +44,7 @@ class RawRequestParser {
             return ""
         }
 
-        //Suspend function
-        if (Global.suspendService) {
-            return ""
-        }
-
-        //Cool down limitation
-        val now = System.currentTimeMillis()
-        if ((now - Global.lastActivateTime) < Global.coolDownSeconds.toLong() * 1000) {
-            return ""
-        } else {
-            Global.lastActivateTime = System.currentTimeMillis()
-        }
+        if (!isCoolDownEnded()) return ""
 
         //Parse group command
         //TODO: Add filter to ensure safety.
@@ -71,5 +62,20 @@ class RawRequestParser {
         //TODO: "Remind me" implementation.
 
         return ""
+    }
+
+    private fun isCoolDownEnded(): Boolean{
+        //Suspend function
+        if (Global.suspendService) {
+            return false
+        }
+        //Cool down limitation
+        val now = System.currentTimeMillis()
+        if ((now - Global.lastActivateTime) < Global.coolDownSeconds.toLong() * 1000) {
+            return false
+        } else {
+            Global.lastActivateTime = System.currentTimeMillis()
+        }
+        return true
     }
 }

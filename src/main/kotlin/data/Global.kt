@@ -2,7 +2,7 @@ package data
 
 object Global {
     //Cool down settings
-    var coolDownSeconds: Int = 3
+    var coolDownSeconds: Int = 2
     var lastActivateTime = System.currentTimeMillis() - coolDownSeconds * 1000
     //Local port of the running server
     var localPort: Int = 1080

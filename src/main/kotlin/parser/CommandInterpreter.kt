@@ -78,10 +78,12 @@ class CommandInterpreter {
      * (Command from conversations and command)
      */
     fun parseSuperCommand(superCommand: String):String {
+        //TODO: Return flexibly
         val args = superCommand.split(" ")
         try {
             when (args[0]) {
                 "reset" -> {
+                    Global.replyDictionary.clear()
                     return "Reset done."
                 }
                 "load" -> {
@@ -90,7 +92,8 @@ class CommandInterpreter {
                 "save" -> {
                     if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error saving configuration file."
                 }
-                "stopserver" -> {
+                "stop_server" -> {
+                    Prompt.echo("Shutdown signal received.",LogType.OK)
                     if (!Archive.saveKeywordsToFile(File(Global.defaultArchiveLocation))) {
                         Prompt.echo("Error saving configuration file.", LogType.FAILED)
                     }
