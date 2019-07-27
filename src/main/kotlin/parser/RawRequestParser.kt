@@ -5,6 +5,7 @@ import data.Global
 import data.Request
 import network.Client
 
+
 class RawRequestParser {
     fun parse(rawRequest: String):String {
         //Parse raw request
@@ -14,7 +15,7 @@ class RawRequestParser {
         when (request.post_type){
             "notice" -> {
                 if (request.notice_type=="group_increase" && isCoolDownEnded()){
-                    Client.sendMessageToGroup(request.group_id,"Welcome, freshman!")
+                    Client.sendMessageToGroup(request.group_id,"Welcome, freshman! ( ´∀｀)σ")
                     return "Welcome freshman!"
                 }
             }
@@ -48,6 +49,7 @@ class RawRequestParser {
 
         //Parse group command
         //TODO: Add filter to ensure safety.
+
         //TODO: Solve the problem of specific symbols.
         val groupCommandResult = CommandInterpreter().parseGroupCommand(request.message, request.group_id)
         if (groupCommandResult != "") {
@@ -77,5 +79,10 @@ class RawRequestParser {
             Global.lastActivateTime = System.currentTimeMillis()
         }
         return true
+    }
+
+    //TODO: Complete the symbol filter
+    private fun symbolFilter(rawString: String): String {
+        return rawString.replace(Regex("[-+.^:,]"), "")
     }
 }

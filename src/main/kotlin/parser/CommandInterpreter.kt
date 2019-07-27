@@ -107,18 +107,30 @@ class CommandInterpreter {
                     try {
                         Global.operators.add(args[1].toLong())
                         return "Operator ${args[1]} has been added."
-                    } catch (e: NumberFormatException) {
-                        //TODO: Add IndexOutOfBoundException.
-                        return "Id invalid."
+                    } catch (e: Exception) {
+                        when (e){
+                            is NumberFormatException ->{
+                                return "Id invalid."
+                            }
+                            is IndexOutOfBoundsException ->{
+                                return "Missing parameters."
+                            }
+                        }
                     }
                 }
                 "delop" -> {
                     try {
                         Global.operators.remove(args[1].toLong())
                         return "Operator ${args[1]} has been removed."
-                    } catch (e: NumberFormatException) {
-                        //TODO: Add IndexOutOfBoundException.
-                        return "Id invalid."
+                    } catch (e: Exception) {
+                        when (e){
+                            is NumberFormatException ->{
+                                return "Id invalid."
+                            }
+                            is IndexOutOfBoundsException ->{
+                                return "Missing parameters."
+                            }
+                        }
                     }
                 }
                 "lstop" -> {
@@ -129,15 +141,41 @@ class CommandInterpreter {
                 }
                 "ban" -> {
                     try {
-                        Global.operators.add(args[1].toLong())
-                        return "Operator ${args[1]} has been added."
-                    } catch (e: NumberFormatException) {
-                        //TODO: Add IndexOutOfBoundException.
-                        return "Id invalid."
+                        Global.blacklist.add(args[1].toLong())
+                        return "${args[1]} has been banned."
+                    } catch (e: Exception) {
+                        when (e){
+                            is NumberFormatException ->{
+                                return "Id invalid."
+                            }
+                            is IndexOutOfBoundsException ->{
+                                return "Missing parameters."
+                            }
+                        }
                     }
                 }
-                //TODO: Add unban function
-                //TODO: Add server running status
+                "unban" -> {
+                    try {
+                        Global.blacklist.remove(args[1].toLong())
+                        return "${args[1]} has been removed from blacklist."
+                    } catch (e: Exception) {
+                        when (e){
+                            is NumberFormatException ->{
+                                return "Id invalid."
+                            }
+                            is IndexOutOfBoundsException ->{
+                                return "Missing parameters."
+                            }
+                        }
+                    }
+                }
+                "lstbl" ->{
+                    return Global.blacklist.toString()
+                }
+                //TODO: Complete the status query.
+                "status" ->{
+                    return ""
+                }
             }
             return ""
         } catch (e: IndexOutOfBoundsException) {

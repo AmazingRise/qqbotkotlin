@@ -3,7 +3,8 @@ package data
 object Global {
     //Cool down settings
     var coolDownSeconds: Int = 2
-    var lastActivateTime = System.currentTimeMillis() - coolDownSeconds * 1000
+    val startTime = System.currentTimeMillis()
+    var lastActivateTime = startTime - coolDownSeconds * 1000
     //Local port of the running server
     var localPort: Int = 1080
     //CoolQ frontend address. e.g.: 127.0.0.1:5700
