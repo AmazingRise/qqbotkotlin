@@ -30,7 +30,7 @@ object Server {
 
         val reply = RawRequestParser().parse(requestBody)
         //TODO: Return flexibly
-        out.write("""{"reply":"$reply", "at_sender" : true}""")
+        out.write("""{"reply":"$reply", "at_sender" : false}""")
         out.close()
     }
 

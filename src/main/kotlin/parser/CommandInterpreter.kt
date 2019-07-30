@@ -19,6 +19,7 @@ class CommandInterpreter {
         when (command) {
             "addkw" -> {
                 try {
+                    if (args.lastIndex < 2) return "Missing the content of reply."
                     val keyword = args[1]
                     val reply = content.substringAfter(" ").substringAfter(" ")
                     if (Global.replyDictionary[groupId]!=null) {
