@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import data.Global
 import data.Request
 import network.Client
+import util.Prompt
 
 
 class RawRequestParser {
@@ -20,7 +21,13 @@ class RawRequestParser {
                 }
             }
             "message" ->{
-                return messageProcessor(request)
+                val result = messageProcessor(request)
+                if (result!="" && isCoolDownEnded()){
+                    Prompt.echo("${request.message} acitvated cool down.")
+                    return result
+                } else {
+                    return ""
+                }
             }
             "request"->{
                 //TODO: Add friend request responding
@@ -45,7 +52,7 @@ class RawRequestParser {
             return ""
         }
 
-        if (!isCoolDownEnded()) return ""
+
 
         //Parse group command
         //TODO: Add filter to ensure safety.

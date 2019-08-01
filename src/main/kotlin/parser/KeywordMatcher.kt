@@ -1,6 +1,7 @@
 package parser
 
 import data.Global
+import util.Prompt
 
 class KeywordMatcher {
 
@@ -9,6 +10,7 @@ class KeywordMatcher {
         for (keyword in Global.replyDictionary[source]!!.keys)
         {
             if (content.contains(keyword)) {
+                Prompt.echo("Match:$source")
                 return Global.replyDictionary[source]!![keyword]!!
             }
         }
