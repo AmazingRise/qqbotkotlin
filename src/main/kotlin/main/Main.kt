@@ -13,6 +13,6 @@ fun main(args: Array<String>) {
         Archive.loadKeywordsFromFile(file)
         Prompt.echo("Archived keyword loaded.",LogType.OK)
     }
-    network.Server.start(8080)
+    network.Server.start(Global.localPort)
     Prompt.run()
 }

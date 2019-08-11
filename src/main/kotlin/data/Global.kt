@@ -2,11 +2,11 @@ package data
 
 object Global {
     //Cool down settings
-    var coolDownSeconds: Int = 2
+    var coolDownSeconds: Int = 4
     val startTime = System.currentTimeMillis()
     var lastActivateTime = startTime - coolDownSeconds * 1000
     //Local port of the running server
-    var localPort: Int = 1080
+    var localPort: Int = 8080
     //CoolQ frontend address. e.g.: 127.0.0.1:5700
     var remoteAddress: String = "172.16.237.233:5700"
     var replyDictionary: MutableMap<Long, MutableMap<String, String>> = HashMap<Long, MutableMap<String, String>>()

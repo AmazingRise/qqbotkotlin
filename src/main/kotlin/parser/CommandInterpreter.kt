@@ -53,7 +53,7 @@ class CommandInterpreter {
             "lstkw" -> {
                     return Global.replyDictionary[groupId].toString()
             }
-            "remindme" -> {
+            "remind" -> {
                 try {
                     val sentence = content.drop(6)
                     if (sentence=="")

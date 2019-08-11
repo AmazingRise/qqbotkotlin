@@ -18,16 +18,16 @@ object Archive {
 
     fun saveKeywordsToFile(file: File):Boolean {
         val adapter = Moshi.Builder().build().adapter<MutableMap<Long,MutableMap<String,String>>>(MutableMap::class.java)
-        return try {
+        try {
             val jsonContent = adapter.toJson(Global.replyDictionary)
             if (!file.exists()) {
-
+                file.createNewFile()
             }
             file.writeText(jsonContent)
-            true
+            return true
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            return false
         }
     }
 }
