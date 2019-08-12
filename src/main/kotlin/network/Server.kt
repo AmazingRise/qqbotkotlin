@@ -7,6 +7,7 @@ import parser.RawRequestParser
 import util.Prompt
 import java.io.BufferedReader
 import java.net.InetSocketAddress
+import kotlin.system.exitProcess
 
 object Server {
     private var server : HttpServer? = null
@@ -30,7 +31,7 @@ object Server {
 
         val reply = RawRequestParser().parse(requestBody)
         //TODO: Return flexibly
-        out.write("""{"reply":"$reply", "at_sender" : false}""")
+        out.write("""{"reply":"$reply", "at_sender" : false, "test" : 1}""")
         out.close()
     }
 
@@ -43,6 +44,7 @@ object Server {
         } catch (e: Exception) {
             e.printStackTrace()
             Prompt.echo("Failed to start HTTP server.",LogType.FAILED)
+            exitProcess(1)
         }
     }
 

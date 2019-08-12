@@ -64,7 +64,7 @@ class RawRequestParser {
         }
 
         //Match the keywords
-        val keywordResult = KeywordMatcher().match(request.message, request.group_id)
+        val keywordResult = matchKeyword(request.message, request.group_id)
         if (keywordResult !="") {
             return keywordResult
         }
@@ -91,5 +91,17 @@ class RawRequestParser {
     //TODO: Complete the symbol filter
     private fun symbolFilter(rawString: String): String {
         return rawString.replace(Regex("[-+.^:,]"), "")
+    }
+
+    private fun matchKeyword(content: String, source: Long):String {
+        //Prompt.echo(content)
+        for (keyword in Global.replyDictionary[source]!!.keys)
+        {
+            if (content.contains(keyword)) {
+                Prompt.echo("Match:$source")
+                return Global.replyDictionary[source]!![keyword]!!
+            }
+        }
+        return ""
     }
 }
