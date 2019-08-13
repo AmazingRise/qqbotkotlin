@@ -1,18 +1,18 @@
 package main
 
 import data.Global
-import data.LogType
-import util.Archive
+import util.AutoSave
 import util.Prompt
-import java.io.File
+import kotlin.concurrent.thread
 
 
 fun main(args: Array<String>) {
-    val file = File(Global.defaultArchiveLocation)
-    if (file.exists()) {
-        Archive.loadKeywordsFromFile(file)
-        Prompt.echo("Archived keyword loaded.",LogType.OK)
-    }
+    AutoSave.autoLoad(Global.defaultArchiveLocation)
     network.Server.start(Global.localPort)
-    Prompt.run()
+    thread{
+        Prompt.run()
+    }
+    thread{
+        AutoSave.autoSaveWatchDog(Global.autoSaveDuration)
+    }
 }

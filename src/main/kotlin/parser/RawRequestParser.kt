@@ -52,8 +52,6 @@ class RawRequestParser {
             return ""
         }
 
-
-
         //Parse group command
         //TODO: Add filter to ensure safety.
 

@@ -10,7 +10,9 @@ object Global {
     //CoolQ frontend address. e.g.: 127.0.0.1:5700
     var remoteAddress: String = "172.16.237.233:5700"
     var replyDictionary: MutableMap<Long, MutableMap<String, String>> = HashMap<Long, MutableMap<String, String>>()
+    //Auto Save Configurations
     var defaultArchiveLocation: String = "./archive.json"
+    const val autoSaveDuration: Long = 3600000L
 
     //The function "reminder"
     var reminders: MutableMap<Long, String> = HashMap<Long, String>()
