@@ -1,6 +1,7 @@
 package parser
 
 import com.squareup.moshi.Moshi
+import data.ErrorLevel
 import data.Global
 import data.Request
 import network.Client
@@ -42,8 +43,8 @@ class RawRequestParser {
         //Process operator commands
         if (request.user_id in Global.operators) {
             val superCommandResult = CommandInterpreter().parseSuperCommand(request.message)
-            if (superCommandResult != "") {
-                return superCommandResult
+            if (superCommandResult.errorLevel != ErrorLevel.NOTFOUND) {
+                return superCommandResult.content
             }
         }
 
@@ -54,11 +55,9 @@ class RawRequestParser {
 
         //Parse group command
         //TODO: Add filter to ensure safety.
-
-        //TODO: Solve the problem of specific symbols.
         val groupCommandResult = CommandInterpreter().parseGroupCommand(request.message, request.group_id)
-        if (groupCommandResult != "") {
-            return groupCommandResult
+        if (groupCommandResult.errorLevel != ErrorLevel.NOTFOUND) {
+            return groupCommandResult.content
         }
 
         //Match the keywords
@@ -66,8 +65,6 @@ class RawRequestParser {
         if (keywordResult !="") {
             return keywordResult
         }
-        //TODO: "Remind me" implementation.
-
         return ""
     }
 
@@ -86,7 +83,7 @@ class RawRequestParser {
         return true
     }
 
-    //TODO: Complete the symbol filter
+    // TODO: Complete the symbol filter
     private fun symbolFilter(rawString: String): String {
         return rawString.replace(Regex("[-+.^:,]"), "")
     }

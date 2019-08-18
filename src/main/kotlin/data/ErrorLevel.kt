@@ -2,5 +2,7 @@ package data
 
 enum class ErrorLevel {
     SUCCESS,
-    FAILED
+    FAILED,
+    //Command not found.
+    NOTFOUND
 }

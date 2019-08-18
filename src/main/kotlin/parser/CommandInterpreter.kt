@@ -1,5 +1,7 @@
 package parser
 
+import data.CommandResult
+import data.ErrorLevel
 import data.Global
 import data.LogType
 import util.Archive
@@ -13,13 +15,13 @@ class CommandInterpreter {
      * (Command from conversations)
      * return: command result
      */
-    fun parseGroupCommand(content: String, groupId: Long):String {
+    fun parseGroupCommand(content: String, groupId: Long): CommandResult {
         val args = content.split(" ")
         val command = args[0]
         when (command) {
             "addkw" -> {
                 try {
-                    if (args.lastIndex < 2) return "Missing the content of reply."
+                    if (args.lastIndex < 2) return CommandResult("Missing the content of reply.",ErrorLevel.FAILED)
                     val keyword = args[1]
                     val reply = content.substringAfter(" ").substringAfter(" ")
                     if (Global.replyDictionary[groupId]!=null) {
@@ -29,10 +31,10 @@ class CommandInterpreter {
                         initHashMap[keyword] = reply
                         Global.replyDictionary[groupId] = initHashMap
                     }
-                    return "Done. ($keyword,$reply)"
+                    return CommandResult("Done. ($keyword,$reply)",ErrorLevel.SUCCESS)
                 }  catch (e: Exception) {
                     e.printStackTrace()
-                    return "Failed to add keyword."
+                    return CommandResult("Failed to add keyword.",ErrorLevel.FAILED)
                 }
             }
             "delkw" -> {
@@ -41,17 +43,17 @@ class CommandInterpreter {
                     val keyword = param[1]
                     if (Global.replyDictionary[groupId]!!.contains(keyword)) {
                         Global.replyDictionary[groupId]!!.remove(keyword)
-                        return "Removed. ($keyword)"
+                        return CommandResult("Removed. ($keyword)",ErrorLevel.SUCCESS)
                     }else{
-                        return "\"${keyword}\" does not exist."
+                        return CommandResult("\"${keyword}\" does not exist.",ErrorLevel.FAILED)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    return "Failed to remove keyword."
+                    return CommandResult("Failed to remove keyword.",ErrorLevel.FAILED)
                 }
             }
             "lstkw" -> {
-                    return Global.replyDictionary[groupId].toString()
+                return CommandResult(Global.replyDictionary[groupId].toString(),ErrorLevel.SUCCESS)
             }
             "remind" -> {
                 try {
@@ -59,39 +61,47 @@ class CommandInterpreter {
                     if (sentence=="")
                     {
                         Global.reminders.remove(args[1].toLong())
-                        return "Reminder of ${args[1].toLong()} has been removed."
+                        return CommandResult("Reminder of ${args[1].toLong()} has been removed.",ErrorLevel.FAILED)
                     }else{
                         Global.reminders.put(args[1].toLong(),sentence)
-                        return "Done. (Reminder of ${args[1].toLong()})"
+                        return CommandResult("Done. (Reminder of ${args[1].toLong()})",ErrorLevel.FAILED)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    return "Add reminder failed."
+                    return CommandResult("Add reminder failed.",ErrorLevel.FAILED)
                 }
             }
-            "syn" -> return "ack"
+            "syn" -> return CommandResult("ack",ErrorLevel.SUCCESS)
+            //TODO: Complete the status query.
+            "status" ->{
+                return CommandResult("",ErrorLevel.NOTFOUND)
+            }
         }
-        return ""
+        return CommandResult("",ErrorLevel.NOTFOUND)
     }
 
     /**
      * parseSuperCommand
      * (Command from conversations and command)
      */
-    fun parseSuperCommand(superCommand: String):String {
+    fun parseSuperCommand(superCommand: String):CommandResult {
         //TODO: Return flexibly
         val args = superCommand.split(" ")
         try {
             when (args[0]) {
                 "reset" -> {
                     Global.replyDictionary.clear()
-                    return "Reset done."
+                    return CommandResult("Reset done.",ErrorLevel.SUCCESS)
                 }
                 "load" -> {
-                    if (!Archive.loadKeywordsFromFile(File(args[1]))) return "Error loading configuration file."
+                    return if (Archive.loadKeywordsFromFile(File(args[1]))) {
+                        CommandResult("Keyword has been loaded.",ErrorLevel.SUCCESS)
+                    } else CommandResult("Error loading configuration file.",ErrorLevel.SUCCESS)
                 }
                 "save" -> {
-                    if (!Archive.saveKeywordsToFile(File(args[1]))) return "Error saving configuration file."
+                    return if (Archive.saveKeywordsToFile(File(args[1]))) {
+                        CommandResult("Keyword has been saved to ${args[1]}.",ErrorLevel.SUCCESS)
+                    } else CommandResult("Error saving configuration file.",ErrorLevel.SUCCESS)
                 }
                 "stop_server" -> {
                     Prompt.echo("Shutdown signal received.",LogType.OK)
@@ -102,85 +112,54 @@ class CommandInterpreter {
                     exitProcess(0)
                 }
                 "toggle" -> {
-                    return toggle(args[1])
+                    return CommandResult(toggle(args[1]),ErrorLevel.SUCCESS)
                 }
                 "addop" -> {
                     try {
                         Global.operators.add(args[1].toLong())
-                        return "Operator ${args[1]} has been added."
-                    } catch (e: Exception) {
-                        when (e){
-                            is NumberFormatException ->{
-                                return "Id invalid."
-                            }
-                            is IndexOutOfBoundsException ->{
-                                return "Missing parameters."
-                            }
-                        }
+                        return CommandResult("Operator ${args[1]} has been added.",ErrorLevel.SUCCESS)
+                    } catch (e: NumberFormatException) {
+                        return CommandResult("Id invalid.",ErrorLevel.FAILED)
                     }
                 }
                 "delop" -> {
                     try {
                         Global.operators.remove(args[1].toLong())
-                        return "Operator ${args[1]} has been removed."
-                    } catch (e: Exception) {
-                        when (e){
-                            is NumberFormatException ->{
-                                return "Id invalid."
-                            }
-                            is IndexOutOfBoundsException ->{
-                                return "Missing parameters."
-                            }
-                        }
+                        return CommandResult("Operator ${args[1]} has been removed.",ErrorLevel.SUCCESS)
+                    } catch (e: NumberFormatException) {
+                        return CommandResult("Id invalid.",ErrorLevel.FAILED)
                     }
                 }
                 "lstop" -> {
-                    return Global.operators.toString()
+                    return CommandResult(Global.operators.toString(),ErrorLevel.SUCCESS)
                 }
                 "lstallkw" -> {
-                    return Global.replyDictionary.toString()
+                    return CommandResult(Global.replyDictionary.toString(),ErrorLevel.SUCCESS)
                 }
                 "ban" -> {
                     try {
                         Global.blacklist.add(args[1].toLong())
-                        return "${args[1]} has been banned."
-                    } catch (e: Exception) {
-                        when (e){
-                            is NumberFormatException ->{
-                                return "Id invalid."
-                            }
-                            is IndexOutOfBoundsException ->{
-                                return "Missing parameters."
-                            }
-                        }
+                        return CommandResult("${args[1]} has been banned.",ErrorLevel.SUCCESS)
+                    } catch (e: NumberFormatException) {
+                        return CommandResult("Id invalid.",ErrorLevel.FAILED)
                     }
                 }
                 "unban" -> {
                     try {
                         Global.blacklist.remove(args[1].toLong())
-                        return "${args[1]} has been removed from blacklist."
-                    } catch (e: Exception) {
-                        when (e){
-                            is NumberFormatException ->{
-                                return "Id invalid."
-                            }
-                            is IndexOutOfBoundsException ->{
-                                return "Missing parameters."
-                            }
-                        }
+                        return CommandResult("${args[1]} has been removed from blacklist.",ErrorLevel.SUCCESS)
+                    } catch (e: NumberFormatException) {
+                        return CommandResult("Id invalid.",ErrorLevel.FAILED)
                     }
                 }
                 "lstbl" ->{
-                    return Global.blacklist.toString()
+                    return CommandResult(Global.blacklist.toString(),ErrorLevel.SUCCESS)
                 }
-                //TODO: Complete the status query.
-                "status" ->{
-                    return ""
-                }
+
             }
-            return ""
+            return CommandResult("",ErrorLevel.NOTFOUND)
         } catch (e: IndexOutOfBoundsException) {
-            return "Parameters missing."
+            return CommandResult("Missing parameters.",ErrorLevel.FAILED)
         }
     }
 

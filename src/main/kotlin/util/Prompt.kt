@@ -1,12 +1,12 @@
 package util
 
+import data.ErrorLevel
 import data.Global
 import data.LogType
 import parser.CommandInterpreter
 
 object Prompt {
-    val promptSymbol = "Robot>"
-
+    private const val promptSymbol = "root#"
     fun echo(text: String) {
         if (Global.printInfo) {
             echo(text, LogType.INFO)
@@ -22,12 +22,20 @@ object Prompt {
     }
     fun run(){
         while (true){
-            echo("Robot prompt is ready.", LogType.OK)
             print(promptSymbol)
             val input: String = readLine() ?: continue
+            //TODO: Some prompt only command, like group chatting env. simulation
             val result = CommandInterpreter().parseSuperCommand(input)
-            if (result != "") {
-                echo(result, LogType.OK)
+            when (result.errorLevel){
+                ErrorLevel.NOTFOUND -> {
+                    echo("Command not found.", LogType.FAILED)
+                }
+                ErrorLevel.SUCCESS -> {
+                    echo(result.content, LogType.OK)
+                }
+                ErrorLevel.FAILED -> {
+                    echo(result.content, LogType.FAILED)
+                }
             }
         }
     }
