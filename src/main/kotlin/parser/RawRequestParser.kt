@@ -1,10 +1,10 @@
 package parser
 
 import com.squareup.moshi.Moshi
-import data.ErrorLevel
 import data.Global
-import data.Request
 import network.Client
+import parser.message.MessageParser
+import parser.message.Request
 import util.Prompt
 
 
@@ -22,7 +22,7 @@ class RawRequestParser {
                 }
             }
             "message" ->{
-                val result = messageProcessor(request)
+                val result = MessageParser().messageProcessor(request)
                 if (result!="" && isCoolDownEnded()){
                     Prompt.echo("${request.message} acitvated cool down.")
                     return result
@@ -35,36 +35,6 @@ class RawRequestParser {
             }
         }
 
-        return ""
-    }
-
-    private fun messageProcessor(request: Request): String {
-
-        //Process operator commands
-        if (request.user_id in Global.operators) {
-            val superCommandResult = CommandInterpreter().parseSuperCommand(request.message)
-            if (superCommandResult.errorLevel != ErrorLevel.NOTFOUND) {
-                return superCommandResult.content
-            }
-        }
-
-        //Blacklist function
-        if (request.user_id in Global.blacklist) {
-            return ""
-        }
-
-        //Parse group command
-        //TODO: Add filter to ensure safety.
-        val groupCommandResult = CommandInterpreter().parseGroupCommand(request.message, request.group_id)
-        if (groupCommandResult.errorLevel != ErrorLevel.NOTFOUND) {
-            return groupCommandResult.content
-        }
-
-        //Match the keywords
-        val keywordResult = matchKeyword(request.message, request.group_id)
-        if (keywordResult !="") {
-            return keywordResult
-        }
         return ""
     }
 
@@ -88,15 +58,5 @@ class RawRequestParser {
         return rawString.replace(Regex("[-+.^:,]"), "")
     }
 
-    private fun matchKeyword(content: String, source: Long):String {
-        //Prompt.echo(content)
-        for (keyword in Global.replyDictionary[source]!!.keys)
-        {
-            if (content.contains(keyword)) {
-                Prompt.echo("Match:$source")
-                return Global.replyDictionary[source]!![keyword]!!
-            }
-        }
-        return ""
-    }
+
 }

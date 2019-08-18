@@ -1,6 +1,6 @@
 package data
 
-enum class LogType {
+enum class PromptLogType {
     FAILED,
     OK,
     INFO

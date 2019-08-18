@@ -1,6 +1,6 @@
 package network
 import data.Global
-import data.LogType
+import data.PromptLogType
 import khttp.get
 import util.Prompt
 
@@ -10,7 +10,7 @@ object Client {
             get("http://${Global.remoteAddress}/send_msg?group_id=$groupId&message=$content")
             true
         } catch (e: NullPointerException) {
-            Prompt.echo("Failed to send message due to null remote address.", LogType.FAILED)
+            Prompt.echo("Failed to send message due to null remote address.", PromptLogType.FAILED)
             false
         }
     }
@@ -19,7 +19,7 @@ object Client {
             get("http://${Global.remoteAddress}/send_msg?user_id=$friendId&message=$content")
             true
         } catch (e: NullPointerException) {
-            Prompt.echo("Failed to send message due to null remote address.", LogType.FAILED)
+            Prompt.echo("Failed to send message due to null remote address.", PromptLogType.FAILED)
             false
         }
     }

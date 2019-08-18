@@ -1,4 +1,4 @@
-package data
+package parser.command
 
 enum class ErrorLevel {
     SUCCESS,

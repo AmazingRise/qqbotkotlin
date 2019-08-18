@@ -1,4 +1,4 @@
-package data
+package parser.message
 
 data class Request(
     val font: Int,

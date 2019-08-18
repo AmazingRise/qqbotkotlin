@@ -1,6 +1,6 @@
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import parser.CommandInterpreter
+import parser.command.CommandInterpreter
 import util.Archive
 import java.io.File
 import java.util.logging.Level
@@ -21,7 +21,7 @@ class ArchiveTest {
         //Loading test
         interpreter.parseGroupCommand("delkw hello", 0L)
         Archive.loadKeywordsFromFile(File("1.json"))
-        assertEquals("{hello=hi}",CommandInterpreter().parseGroupCommand("lstkw",0L))
+        assertEquals("{hello=hi}", CommandInterpreter().parseGroupCommand("lstkw",0L))
 
         //Delete temporary file
         File("1.json").delete()

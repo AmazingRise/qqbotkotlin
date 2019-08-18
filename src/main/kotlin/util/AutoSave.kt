@@ -1,7 +1,7 @@
 package util
 
 import data.Global
-import data.LogType
+import data.PromptLogType
 import java.io.File
 import java.time.LocalDateTime
 import java.util.*
@@ -13,7 +13,7 @@ object AutoSave {
         val file = File(location)
         if (file.exists()) {
             Archive.loadKeywordsFromFile(file)
-            Prompt.echo("Archived keyword loaded.", LogType.OK)
+            Prompt.echo("Archived keyword loaded.", PromptLogType.OK)
         }
     }
     fun autoSaveWatchDog(interval: Long){

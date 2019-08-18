@@ -2,7 +2,7 @@ package network
 
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
-import data.LogType
+import data.PromptLogType
 import parser.RawRequestParser
 import util.Prompt
 import java.io.BufferedReader
@@ -40,25 +40,25 @@ object Server {
             server = HttpServer.create(InetSocketAddress(port), 0)
             server?.createContext("/", httpHandler)
             server?.start()
-            Prompt.echo("Serving HTTP on port $port ...",LogType.OK)
+            Prompt.echo("Serving HTTP on port $port ...",PromptLogType.OK)
         } catch (e: Exception) {
             e.printStackTrace()
-            Prompt.echo("Failed to start HTTP server.",LogType.FAILED)
+            Prompt.echo("Failed to start HTTP server.",PromptLogType.FAILED)
             exitProcess(1)
         }
     }
 
     fun stop() {
         if (server == null) {
-            Prompt.echo("No server is running.",LogType.FAILED)
+            Prompt.echo("No server is running.",PromptLogType.FAILED)
             return
         }
         try {
             server?.stop(3)
-            Prompt.echo("Server stopped.",LogType.OK)
+            Prompt.echo("Server stopped.",PromptLogType.OK)
         } catch (e: Exception) {
             e.printStackTrace()
-            Prompt.echo("Failed to stop HTTP server.",LogType.FAILED)
+            Prompt.echo("Failed to stop HTTP server.",PromptLogType.FAILED)
         }
     }
 }
