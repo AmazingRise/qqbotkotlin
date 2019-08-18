@@ -18,11 +18,38 @@ Once the keyword is hit, the robot will reply the preset paragraph.
 1. Keywords isolation among conversations.
 1. Cool down time limitation.
 
-## Get Started
+## Build and Deployment
+**NOTE:** If the instruction make you confused, don't be worried. The README file needs supplement, and I will try to make it more clear in the following days.
 
+If you have any questions about build and deployment, please **open an issue**.
+Thanks for your support.
+
+### Build Instruction for Gradle
+Add following lines to `build.gradle`.
+
+For the `dependencies` section, please modify:
+```groovy
+dependencies{
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "com.squareup.moshi:moshi:1.8.0"
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.3.41"
+    compile group: 'khttp', name: 'khttp', version: '1.0.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+```
+
+And don't forget to add `jcenter` to the `repositories` section:
+```groovy
+repositories{
+    mavenCentral()
+    jcenter()
+}
+```
+If you've done the instructions above, now you can build this project with gradle successfully.
+
+### Deployment
 **NOTE:** Our robot is referred as "back-end" in the following instructions.
 
-**NOTE:** If the instruction make you confused, don't be worried. The README file needs supplement, and I will try to make it more clear in the following days.
 1. Download CoolQ Air ([Official website](https://cqp.cc/)), and install the plugin [CoolQ HTTP API](https://cqp.cc/t/30748).
 (Pro is better but not necessary.)
 1. Deploy the plugin as HTTP server, and set `post_url` in configuration file as our Kotlin back-end's address. (default port is defined as `1080`, which lies in `/src/main/data/Global.kt`,the var `localPort`) [Official docs here](https://cqhttp.cc/docs/4.10/#/).
