@@ -15,8 +15,7 @@ class CommandInterpreter {
      */
     fun parseGroupCommand(content: String, groupId: Long): CommandResult {
         val args = content.split(" ")
-        val command = args[0]
-        when (command) {
+        when (args[0]) {
             "addkw" -> {
                 try {
                     if (args.lastIndex < 2) return CommandResult(
@@ -54,7 +53,28 @@ class CommandInterpreter {
                 }
             }
             "lstkw" -> {
-                return CommandResult(Global.replyDictionary[groupId].toString(), ErrorLevel.SUCCESS)
+                //return CommandResult(Global.replyDictionary[groupId].toString(), ErrorLevel.SUCCESS)
+                val keywordMap = Global.replyDictionary[groupId] ?:return CommandResult("No keywords.", ErrorLevel.FAILED)
+                var pageNum = 1
+                val maxItemInPerPage = 5
+                var result = ""
+
+                if (args.size!=1){
+                    pageNum = args[1].toInt()
+                }
+                run forEachLoop@{
+                    keywordMap.keys.forEachIndexed{ index, element ->
+                        if (index >= maxItemInPerPage * pageNum){
+                            result+="\n\nTo query the next page:\n\"lstkw ${pageNum+1}\""
+                            return@forEachLoop
+                        }
+                        if (index >= maxItemInPerPage * (pageNum - 1)) {
+                            result+="\n\b${index+1}. $element:${keywordMap[element]}"
+                        }
+                    }
+                }
+                if (result == "") return CommandResult("404 Page not found.(2333",ErrorLevel.FAILED)
+                return CommandResult("Keywords and Replies:$result",ErrorLevel.SUCCESS)
             }
             "remind" -> {
                 try {
