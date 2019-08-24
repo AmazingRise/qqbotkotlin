@@ -21,7 +21,7 @@ object Server {
 
         //Generate response header
         val headers = httpExchange.responseHeaders!!
-        headers.add("Content-Type", "application/json")
+        headers.add("Content-Type", "application/x-www-form-urlencoded")
         //HTTP Status Code 200, response length 0
         //I was too lazy to calculate the response length, so I wrote 0 directly.
         //It doesn't matter. :P
@@ -29,9 +29,9 @@ object Server {
 
         val out = httpExchange.responseBody!!.writer()
 
-        val reply = RawRequestParser().parse(requestBody)
-        //TODO: Return flexibly
-        out.write("""{"reply":"$reply", "at_sender" : false, "test" : 1}""")
+        val parserResponse = RawRequestParser().parse(requestBody)
+        Client.sendMessageTo(parserResponse.reply,parserResponse.fromGroupId,parserResponse.fromUserId)
+        out.write("{\"reply\":\"\"\", \"at_sender\" : false}")
         out.close()
     }
 

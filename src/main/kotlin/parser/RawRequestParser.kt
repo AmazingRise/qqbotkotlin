@@ -2,23 +2,25 @@ package parser
 
 import com.squareup.moshi.Moshi
 import data.Global
-import network.Client
 import parser.message.MessageParser
 import parser.message.Request
 import util.Prompt
 
 
 class RawRequestParser {
-    fun parse(rawRequest: String):String {
+    fun parse(rawRequest: String):ParserResponse {
         //Parse raw request
-        val request = Moshi.Builder().build().adapter<Request>(Request::class.java).fromJson(rawRequest)?:return ""
+        val request = Moshi.Builder().build().adapter<Request>(Request::class.java).fromJson(rawRequest)?:return ParserResponse("","",0L,0L)
+        val reply = getReply(request)
+        return ParserResponse(reply ,request.message_type,request.group_id,request.user_id)
+    }
 
+    private fun getReply(request: Request):String{
         //Sort message type
         when (request.post_type){
             "notice" -> {
                 if (request.notice_type=="group_increase" && isCoolDownEnded()){
-                    Client.sendMessageToGroup(request.group_id,"Welcome, freshman! ( ´∀｀)σ")
-                    return "Welcome freshman!"
+                    return "Welcome, freshman! ( ´∀｀)σ"
                 }
             }
             "message" ->{
@@ -34,10 +36,8 @@ class RawRequestParser {
                 //TODO: Add friend request responding
             }
         }
-
         return ""
     }
-
     private fun isCoolDownEnded(): Boolean{
         //Suspend function
         if (Global.suspendService) {
@@ -51,11 +51,6 @@ class RawRequestParser {
             Global.lastActivateTime = System.currentTimeMillis()
         }
         return true
-    }
-
-    // TODO: Complete the symbol filter
-    private fun symbolFilter(rawString: String): String {
-        return rawString.replace(Regex("[-+.^:,]"), "")
     }
 
 

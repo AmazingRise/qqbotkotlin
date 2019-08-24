@@ -172,6 +172,7 @@ class CommandInterpreter {
                     return CommandResult(Global.blacklist.toString(), ErrorLevel.SUCCESS)
                 }
 
+
             }
             return CommandResult("", ErrorLevel.NOTFOUND)
         } catch (e: IndexOutOfBoundsException) {

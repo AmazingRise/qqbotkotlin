@@ -20,6 +20,8 @@ class MessageParser {
     }
 
     fun messageProcessor(request: Request): String {
+        //Filter
+        request.message = symbolFilter(request.message)
 
         //Process operator commands
         if (request.user_id in Global.operators) {
@@ -35,7 +37,6 @@ class MessageParser {
         }
 
         //Parse group command
-        //TODO: Add filter to ensure safety.
         val groupCommandResult = CommandInterpreter().parseGroupCommand(request.message, request.group_id)
         if (groupCommandResult.errorLevel != ErrorLevel.NOTFOUND) {
             return groupCommandResult.content
@@ -47,6 +48,15 @@ class MessageParser {
             return keywordResult
         }
         return ""
+    }
+
+    // TODO: Complete the symbol filter
+    private fun symbolFilter(rawString: String): String {
+        //Filter
+        var result = rawString
+        result = result.replace("=","")
+        .replace(Regex("""[^\S\r\n]+""")," ")
+        return result
     }
 
 
