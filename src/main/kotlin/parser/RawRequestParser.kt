@@ -10,9 +10,9 @@ import util.Prompt
 class RawRequestParser {
     fun parse(rawRequest: String):ParserResponse {
         //Parse raw request
-        val request = Moshi.Builder().build().adapter<Request>(Request::class.java).fromJson(rawRequest)?:return ParserResponse("","",0L,0L)
+        val request = Moshi.Builder().build().adapter<Request>(Request::class.java).fromJson(rawRequest)?:return ParserResponse("",0L,0L)
         val reply = getReply(request)
-        return ParserResponse(reply ,request.message_type,request.group_id,request.user_id)
+        return ParserResponse(reply,request.group_id,request.user_id)
     }
 
     private fun getReply(request: Request):String{

@@ -3,7 +3,7 @@ package data
 object Global {
     //Cool down settings
     var coolDownSeconds: Int = 4
-    val startTime = System.currentTimeMillis()
+    var startTime = System.currentTimeMillis()
     var lastActivateTime = startTime - coolDownSeconds * 1000
     //Local port of the running server
     var localPort: Int = 8080
@@ -12,7 +12,7 @@ object Global {
     var replyDictionary: MutableMap<Long, MutableMap<String, String>> = HashMap<Long, MutableMap<String, String>>()
     //Auto Save Configurations
     var defaultArchiveLocation: String = "./archive.json"
-    const val autoSaveDuration: Long = 3600000L
+    var autoSaveDuration: Long = 3600000L
 
     //The function "reminder"
     var reminders: MutableMap<Long, String> = HashMap<Long, String>()
